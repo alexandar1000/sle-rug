@@ -27,7 +27,7 @@ syntax Expr
   | Bool // 0
   | Int
   | Str // Not in examples, but mentioned on course page
-  | brackets: "(" Expr ")" // In examples, but mentioned nowhere
+  | "(" Expr ")" // In examples, but mentioned nowhere
   | right "!" Expr // 1
   > left (Expr "*" Expr // 2
   | Expr "/" Expr)
@@ -44,12 +44,12 @@ syntax Expr
   ;
   
 syntax Type
-  = boolean: "boolean"
-  | integer: "integer"
-  | string: "string"
+  = "boolean"
+  | "integer"
+  | "string"
   ;
   
-lexical Str = [\"] ![]* [\"]; // Match any sequence of characters between quotes
+lexical Str = [\"] ![\"]* [\"];
 
 lexical Int = [0-9]+;
 
