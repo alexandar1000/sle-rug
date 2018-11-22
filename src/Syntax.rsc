@@ -12,7 +12,11 @@ start syntax Form
 
 // TODO: question, computed question, block, if-then-else, if-then
 syntax Question
-  = 
+  = question: Str Id ":" Type
+  | computedQuestion: Str Id ":" Type "=" Expr
+  | block: "{" Question* "}"
+  | ifThen: "if" "(" Expr ")" Question !>> "else" // !>>: can not be followed by "else"
+  | ifThenElse: "if" "(" Expr ")" Question "else" Question
   ; 
 
 // TODO: +, -, *, /, &&, ||, !, >, <, <=, >=, ==, !=, literals (bool, int, str)
@@ -20,17 +24,35 @@ syntax Question
 // and use C/Java style precedence rules (look it up on the internet)
 syntax Expr 
   = Id \ "true" \ "false" // true/false are reserved keywords.
+  | Bool // 0
+  | Int
+  | Str // Not in examples, but mentioned on course page
+  | brackets: "(" Expr ")" // In examples, but mentioned nowhere
+  | right "!" Expr // 1
+  > left (Expr "*" Expr // 2
+  | Expr "/" Expr)
+  > left (Expr "+" Expr // 3
+  | Expr "-" Expr)
+  > left (Expr "\>" Expr // 4
+  | Expr "\<" Expr
+  | Expr "\<=" Expr
+  | Expr "\>=" Expr)
+  > left (Expr "==" Expr // 5
+  | Expr "!=" Expr)
+  > left Expr "&&" Expr // 6
+  > left Expr "||" Expr // 7
   ;
   
 syntax Type
-  = ;  
+  = boolean: "boolean"
+  | integer: "integer"
+  | string: "string"
+  ;
   
-lexical Str = ;
+lexical Str = [\"] ![]* [\"]; // Match any sequence of characters between quotes
 
-lexical Int 
-  = ;
+lexical Int = [0-9]+;
 
-lexical Bool = ;
-
+lexical Bool = "true" | "false";
 
 
