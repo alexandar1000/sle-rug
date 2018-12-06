@@ -33,11 +33,11 @@ syntax Expr
   | Expr "/" Expr)
   > left (Expr "+" Expr // 3
   | Expr "-" Expr)
-  > left (Expr "\>" Expr // 4
+  > non-assoc (Expr "\>" Expr // 4
   | Expr "\<" Expr
   | Expr "\<=" Expr
   | Expr "\>=" Expr)
-  > left (Expr "==" Expr // 5
+  > non-assoc (Expr "==" Expr // 5
   | Expr "!=" Expr)
   > left Expr "&&" Expr // 6
   > left Expr "||" Expr // 7

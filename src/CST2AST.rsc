@@ -20,7 +20,7 @@ import Boolean;
 AForm cst2ast(start[Form] sf) = cst2ast(sf.top);
 
 AForm cst2ast(f:(Form)`form <Id x> { <Question* qs> }`) {
-  return form("<x>", [ cst2ast(q) | Question q <- qs], src=f@\loc); 
+  return form("<x>", [ cst2ast(q) | Question q <- qs ], src=f@\loc); 
 }
 
 AQuestion cst2ast(q:Question q) {
@@ -28,13 +28,13 @@ AQuestion cst2ast(q:Question q) {
     case (Question)`<Str q> <Id x> : <Type t>`:
       return question("<q>", "<x>", cst2ast(t), src=q@\loc);
     case (Question)`<Str q> <Id x> : <Type t> = <Expr e>`:
-    	return question("<q>", "<x>", cst2ast(t), cst2ast(e), src=q@\loc);
+    	return computed("<q>", "<x>", cst2ast(t), cst2ast(e), src=q@\loc);
    	case (Question)`{ <Question* qs> }`:
-    	return question([ cst2ast(question) | question <- qs ], src=q@\loc);
+    	return block([ cst2ast(question) | question <- qs ], src=q@\loc);
     case (Question)`if ( <Expr e> ) <Question q>`:
-    	return question(cst2ast(e), cst2ast(q), src=q@\loc);
+    	return ifThen(cst2ast(e), cst2ast(q), src=q@\loc);
     case (Question)`if ( <Expr e> ) <Question q> else <Question q2>`:
-    	return question(cst2ast(e), cst2ast(q), cst2ast(q2), src=q@\loc);
+    	return ifThenElse(cst2ast(e), cst2ast(q), cst2ast(q2), src=q@\loc);
     default: throw "Unhandled question: <q>";
   }
 }
