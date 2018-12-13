@@ -21,16 +21,16 @@ TEnv collect(AForm f) {
   
   for (/AQuestion q := f) {  
   	if (q has id) {
-	    switch (q.ansType) {
-	  	  case booleanType(): 
-	  	    tEnv += <q.src, q.name, q.id, tbool()>;
-		  case integerType():
-	  	    tEnv += <q.src, q.name, q.id, tint()>;
-	  	  case stringType():
-	  	    tEnv += <q.src, q.name, q.id, tstr()>;
-	  	  default:
-	  	    tEnv += <q.src, q.name, q.id, tunknown()>;
-	  	}
+	  switch (q.ansType) {
+	    case booleanType(): 
+	      tEnv += <q.src, q.name, q.id, tbool()>;
+  	    case integerType():
+	      tEnv += <q.src, q.name, q.id, tint()>;
+	    case stringType():
+	      tEnv += <q.src, q.name, q.id, tstr()>;
+	    default:
+	      tEnv += <q.src, q.name, q.id, tunknown()>;
+	  }
   	}
   }
   
