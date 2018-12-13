@@ -11,8 +11,8 @@ data AForm(loc src = |tmp:///|)
   = form(str name, list[AQuestion] questions); 
 
 data AQuestion(loc src = |tmp:///|)
-  = question(str q, str id, AType ansType)
-  | computed(str q, str id, AType ansType, AExpr expr)
+  = question(str name, str id, AType ansType)
+  | computed(str name, str id, AType ansType, AExpr expr)
   | block(list[AQuestion] questions)
   | ifThen(AExpr expr, AQuestion question)
   | ifThenElse(AExpr expr, AQuestion question, AQuestion question)
@@ -44,4 +44,5 @@ data AType(loc src = |tmp:///|)
   = booleanType()
   | integerType()
   | stringType()
+  | unknownType()
   ;

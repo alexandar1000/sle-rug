@@ -89,6 +89,6 @@ AType cst2ast(t:Type t) {
   	  return integerType(src=t@\loc);
   	case (Type)`string`:
   	  return stringType(src=t@\loc);
-  	default: throw "Unhandled type: <t>";
+  	default: return unknownType();
   }
 }
