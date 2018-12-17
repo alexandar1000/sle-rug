@@ -14,7 +14,7 @@ start syntax Form
 syntax Question
   = Str Id ":" Type
   | Str Id ":" Type "=" Expr
-  | "{" Question* "}"
+  | bracket "{" Question* "}"
   | "if" "(" Expr ")" Question !>> "else" // !>>: can not be followed by "else"
   | "if" "(" Expr ")" Question "else" Question
   ; 
@@ -54,5 +54,3 @@ lexical Str = [\"] ![\"]* [\"];
 lexical Int = [0-9]+;
 
 lexical Bool = "true" | "false";
-
-

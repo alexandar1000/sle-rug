@@ -1,5 +1,7 @@
 module CST2AST
 
+import IO;
+
 import Syntax;
 import AST;
 
@@ -17,13 +19,15 @@ import Boolean;
  * - See the ref example on how to obtain and propagate source locations.
  */
 
+list[str] args = ["*", "/", "+", "-", "\>", "\<", "\>=", "\<=", "==", "!=", "&&", "||"];
+
 AForm cst2ast(start[Form] sf) = cst2ast(sf.top);
 
 AForm cst2ast(f:(Form)`form <Id x> { <Question* qs> }`) {
   return form("<x>", [ cst2ast(q) | Question q <- qs ], src=f@\loc); 
 }
 
-AQuestion cst2ast(q:Question q) {
+AQuestion cst2ast(Question q) {
   switch (q) {
     case (Question)`<Str q> <Id x> : <Type t>`:
       return question("<q>", "<x>", cst2ast(t), src=q@\loc);
@@ -39,7 +43,7 @@ AQuestion cst2ast(q:Question q) {
   }
 }
 
-AExpr cst2ast(e:Expr e) {
+AExpr cst2ast(Expr e) {
   switch (e) {
     case (Expr)`<Id x>`: 
       return ref("<x>", src=e@\loc);
@@ -81,7 +85,7 @@ AExpr cst2ast(e:Expr e) {
   }
 }
 
-AType cst2ast(t:Type t) {
+AType cst2ast(Type t) {
   switch (t) {
   	case (Type)`boolean`:
   	  return booleanType(src=t@\loc);
@@ -91,4 +95,8 @@ AType cst2ast(t:Type t) {
   	  return stringType(src=t@\loc);
   	default: return unknownType();
   }
+}
+
+void printArgs() {
+	println(args);
 }
