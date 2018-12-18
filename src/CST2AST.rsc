@@ -29,16 +29,16 @@ AForm cst2ast(f:(Form)`form <Id x> { <Question* qs> }`) {
 
 AQuestion cst2ast(Question q) {
   switch (q) {
-    case (Question)`<Str q> <Id x> : <Type t>`:
-      return question("<q>", "<x>", cst2ast(t), src=q@\loc);
-    case (Question)`<Str q> <Id x> : <Type t> = <Expr e>`:
-    	return computed("<q>", "<x>", cst2ast(t), cst2ast(e), src=q@\loc);
+    case (Question)`<Str q0> <Id x> : <Type t>`:
+      return question("<q0>", "<x>", cst2ast(t), src=q@\loc);
+    case (Question)`<Str q0> <Id x> : <Type t> = <Expr e>`:
+    	return computed("<q0>", "<x>", cst2ast(t), cst2ast(e), src=q@\loc);
    	case (Question)`{ <Question* qs> }`:
-    	return block([ cst2ast(question) | question <- qs ], src=q@\loc);
-    case (Question)`if ( <Expr e> ) <Question q>`:
-    	return ifThen(cst2ast(e), cst2ast(q), src=q@\loc);
-    case (Question)`if ( <Expr e> ) <Question q> else <Question q2>`:
-    	return ifThenElse(cst2ast(e), cst2ast(q), cst2ast(q2), src=q@\loc);
+    	return block([ cst2ast(q0) | q0 <- qs ], src=q@\loc);
+    case (Question)`if ( <Expr e> ) <Question q0>`:
+    	return ifThen(cst2ast(e), cst2ast(q0), src=q@\loc);
+    case (Question)`if ( <Expr e> ) <Question q0> else <Question q1>`:
+    	return ifThenElse(cst2ast(e), cst2ast(q0), cst2ast(q1), src=q@\loc);
     default: throw "Unhandled question: <q>";
   }
 }
@@ -53,10 +53,10 @@ AExpr cst2ast(Expr e) {
       return integer(toInt("<i>"), src=e@\loc);
     case (Expr)`<Str s>`:
       return string("<s>", src=e@\loc);
-    case (Expr)`( <Expr e> )`:
-      return brackets(cst2ast(e), src=e@\loc);
-    case (Expr)`! <Expr e>`:
-      return not(cst2ast(e));
+    case (Expr)`( <Expr e0> )`:
+      return brackets(cst2ast(e0), src=e@\loc);
+    case (Expr)`! <Expr e0>`:
+      return not(cst2ast(e0), src=e@\loc);
     case (Expr)`<Expr l> * <Expr r>`:
       return mul(cst2ast(l), cst2ast(r), src=e@\loc);
     case (Expr)`<Expr l> / <Expr r>`:
