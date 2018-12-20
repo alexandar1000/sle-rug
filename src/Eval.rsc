@@ -51,14 +51,14 @@ Value defaultValue(AType t) {
 // Because of out-of-order use and declaration of questions
 // we use the solve primitive in Rascal to find the fixpoint of venv.
 VEnv eval(AForm f, Input inp, VEnv venv) {
-  return solve (venv; 1) {
+  return solve (venv) {
     venv = evalOnce(f, inp, venv);
   }
 }
 
 VEnv evalOnce(AForm f, Input inp, VEnv venv) {
-	for (/AQuestion q := f) {
-	  	  venv += eval(q, inp, venv);
+	for (AQuestion q <- f.questions) {
+	  venv += eval(q, inp, venv);
 	}
 	return venv;
 }
@@ -75,7 +75,15 @@ VEnv eval(AQuestion q, Input inp, VEnv venv) {
       
       //if it is computed, we need to evaluate what is computed and asign it to the venv
       case computed(_, str identifier, _, AExpr expr):
-      	return (inp.question : eval(expr, venv));
+      	return (identifier : eval(expr, venv));
+      
+      //if it is a block we need to iterate through all questions in the block
+      case block(list[AQuestion] questions): {
+      	for(question <- questions) {
+      		venv += eval(question, inp, venv);
+      	}
+      	return venv;
+      }
       
       //if if-then question, evaluate the guard and recursively call if it is true
       case ifThen(AExpr guard, AQuestion question):
