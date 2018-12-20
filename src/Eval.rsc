@@ -26,7 +26,9 @@ data Input
 // produce an environment which for each question has a default value
 // (e.g. 0 for int, "" for str etc.)
 VEnv initialEnv(AForm f) {
-  return ( q.id : defaultValue(q.questionType) | /AQuestion q := f.questions, q has id, !(q has computedExpr) );
+  //TODO: decide on computed questions, should they be initialized with an initial value, or added to the venv additionally
+  //added the computed questions so that they are in the env as well
+  return ( q.id : defaultValue(q.questionType) | /AQuestion q := f.questions, q has id ); //, !(q has computedExpr) );
 }
 
 Value defaultValue(AType t) {
@@ -49,7 +51,7 @@ Value defaultValue(AType t) {
 // Because of out-of-order use and declaration of questions
 // we use the solve primitive in Rascal to find the fixpoint of venv.
 VEnv eval(AForm f, Input inp, VEnv venv) {
-  return solve (venv) {
+  return solve (venv; 1) {
     venv = evalOnce(f, inp, venv);
   }
 }
@@ -66,23 +68,23 @@ VEnv eval(AQuestion q, Input inp, VEnv venv) {
   // evaluate inp and computed questions to return updated VEnv
     switch (q) {
     //if it is an ordinary question, we should update the value of the question in the venv
-      case question(_, str identifier, _, _): 
+      case question(_, str identifier, _): 
       	if (identifier == inp.question) {
       		return (inp.question : inp.\value);
       	}
       
       //if it is computed, we need to evaluate what is computed and asign it to the venv
-      case computed(_, str identifier, _, AExpr expr, _):
+      case computed(_, str identifier, _, AExpr expr):
       	return (inp.question : eval(expr, venv));
       
       //if if-then question, evaluate the guard and recursively call if it is true
-      case ifThen(AExpr guard, AQuestion question, _):
+      case ifThen(AExpr guard, AQuestion question):
       	if (eval(guard, venv) == vbool(true)) {
           return eval(question, inp, venv);
       	}
       
       //if if-then-else question, evaluate the guard and recursively call the adequate question
-      case ifThenElse(AExpr guard, AQuestion ifQ, AQuestion elseQ, _):
+      case ifThenElse(AExpr guard, AQuestion ifQ, AQuestion elseQ):
         if (eval(guard, venv) == vbool(true)) {
           return eval(ifQ, inp, venv);
         } else {
@@ -90,6 +92,7 @@ VEnv eval(AQuestion q, Input inp, VEnv venv) {
         }
       default: return venv;
   }
+  return venv;
 }
 
 Value eval(AExpr e, VEnv venv) {
