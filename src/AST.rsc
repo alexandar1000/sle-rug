@@ -14,8 +14,8 @@ data AQuestion(loc src = |tmp:///|)
   = question(str lbl, str id, AType questionType)
   | computed(str lbl, str id, AType resultType, AExpr computedExpr)
   | block(list[AQuestion] questions)
-  | ifThen(AExpr guardExpr, AQuestion question)
-  | ifThenElse(AExpr guardExpr, AQuestion question, AQuestion question); 
+  | ifThen(AExpr guard, AQuestion question)
+  | ifThenElse(AExpr guard, AQuestion ifQuestion, AQuestion elseQuestion); 
 
 data AExpr(loc src = |tmp:///|)
   = ref(str name)
