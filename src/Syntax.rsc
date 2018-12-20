@@ -16,8 +16,7 @@ syntax Question
   | Str Id ":" Type "=" Expr
   | bracket "{" Question* "}"
   | "if" "(" Expr ")" Question !>> "else" // !>>: can not be followed by "else"
-  | "if" "(" Expr ")" Question "else" Question
-  ; 
+  | "if" "(" Expr ")" Question "else" Question; 
 
 // TODO: +, -, *, /, &&, ||, !, >, <, <=, >=, ==, !=, literals (bool, int, str)
 // Think about disambiguation using priorities and associativity
@@ -40,14 +39,12 @@ syntax Expr
   > non-assoc (Expr "==" Expr // 5
   | Expr "!=" Expr)
   > left Expr "&&" Expr // 6
-  > left Expr "||" Expr // 7
-  ;
+  > left Expr "||" Expr; // 7
   
 syntax Type
   = "boolean"
   | "integer"
-  | "string"
-  ;
+  | "string";
   
 lexical Str = [\"] ![\"]* [\"];
 

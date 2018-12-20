@@ -15,8 +15,7 @@ data AQuestion(loc src = |tmp:///|)
   | computed(str lbl, str id, AType questionType, AExpr computedExpr)
   | block(list[AQuestion] questions)
   | ifThen(AExpr guardExpr, AQuestion question)
-  | ifThenElse(AExpr guardExpr, AQuestion question, AQuestion question)
-  ; 
+  | ifThenElse(AExpr guardExpr, AQuestion question, AQuestion question); 
 
 data AExpr(loc src = |tmp:///|)
   = ref(str name)
@@ -38,12 +37,10 @@ data AExpr(loc src = |tmp:///|)
   | eq(AExpr lhs, AExpr rhs)
   | neq(AExpr lhs, AExpr rhs)
   | and(AExpr lhs, AExpr rhs)
-  | or(AExpr lhs, AExpr rhs)
-  ;
+  | or(AExpr lhs, AExpr rhs);
 
 data AType(loc src = |tmp:///|)
   = booleanType()
   | integerType()
   | stringType()
-  | unknownType()
-  ;
+  | unknownType();

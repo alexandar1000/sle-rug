@@ -93,7 +93,8 @@ AType cst2ast(Type t) {
   	  return integerType(src=t@\loc);
   	case (Type)`string`:
   	  return stringType(src=t@\loc);
-  	default: return unknownType();
+  	default: 
+  	  return unknownType();
   }
 }
 
