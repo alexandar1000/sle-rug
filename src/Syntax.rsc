@@ -27,7 +27,7 @@ syntax Expr
   | Bool // 0
   | Int
   | Str // Not in examples, but mentioned on course page
-  | "(" Expr ")" // In examples, but mentioned nowhere
+  | bracket "(" Expr ")" // In examples, but mentioned nowhere
   | right "!" Expr // 1
   > left (Expr "*" Expr // 2
   | Expr "/" Expr)
@@ -35,8 +35,8 @@ syntax Expr
   | Expr "-" Expr)
   > non-assoc (Expr "\>" Expr // 4
   | Expr "\<" Expr
-  | Expr "\<=" Expr
-  | Expr "\>=" Expr)
+  | Expr "\>=" Expr
+  | Expr "\<=" Expr)
   > non-assoc (Expr "==" Expr // 5
   | Expr "!=" Expr)
   > left Expr "&&" Expr // 6
