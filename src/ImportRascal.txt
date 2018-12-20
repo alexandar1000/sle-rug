@@ -1,0 +1,18 @@
+import Syntax;
+import AST;
+import CST2AST;
+import Resolve;
+import Check;
+import Eval;
+import ParseTree;
+
+
+
+
+pt = parse(#Form, |project://QL/examples/binary.myql|);
+ast = cst2ast(pt);
+res = resolve(ast);
+ch = check(ast, collect(ast), res);
+ev = eval(ast, Input input("x_1_10", vbool(true)), initialEnv(ast));
+
+

@@ -23,5 +23,5 @@ Use uses(AForm f) {
 }
 
 Def defs(AForm f) {  
-  return { <q.id, q.src> | /AQuestion q <- f.questions, q has id }; 
+  return { <q.id, q.src> | /AQuestion q := f.questions, q has id }; 
 }

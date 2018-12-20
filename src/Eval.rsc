@@ -26,7 +26,7 @@ data Input
 // produce an environment which for each question has a default value
 // (e.g. 0 for int, "" for str etc.)
 VEnv initialEnv(AForm f) {
-  return ( q.id : defaultValue(q.questionType) | /AQuestion q := f.questions, q has questionType );
+  return ( q.id : defaultValue(q.questionType) | /AQuestion q := f.questions, q has id, !(q has computedExpr) );
 }
 
 Value defaultValue(AType t) {
@@ -55,8 +55,6 @@ VEnv eval(AForm f, Input inp, VEnv venv) {
 }
 
 VEnv evalOnce(AForm f, Input inp, VEnv venv) {
-	Aquestion question;
-	
 	for (/AQuestion q := f) {
 	  	  venv += eval(q, inp, venv);
 	}
@@ -70,12 +68,12 @@ VEnv eval(AQuestion q, Input inp, VEnv venv) {
     //if it is an ordinary question, we should update the value of the question in the venv
       case question(_, str identifier, _, _): 
       	if (identifier == inp.question) {
-      		return venv + (inp.question : inp.\value);
+      		return (inp.question : inp.\value);
       	}
       
       //if it is computed, we need to evaluate what is computed and asign it to the venv
       case computed(_, str identifier, _, AExpr expr, _):
-      	return venv + (inp.question : eval(expr, venv));
+      	return (inp.question : eval(expr, venv));
       
       //if if-then question, evaluate the guard and recursively call if it is true
       case ifThen(AExpr guard, AQuestion question, _):
@@ -128,22 +126,18 @@ Value eval(AExpr e, VEnv venv) {
       Value helpLhs = eval(lhs, venv);
       Value helpRhs = eval(rhs, venv);
 	      if (helpLhs has n && helpRhs has n) {
-	        return vbool(helpLhs.n == helpRhs.n);
+	        return vbool(helpLhs.n != helpRhs.n);
 	      }
 	      if (helpLhs has b && helpRhs has b) {
-	        return vbool(helpLhs.b == helpRhs.b);
+	        return vbool(helpLhs.b != helpRhs.b);
 	      }
 	      if (helpLhs has s && helpRhs has s) {
-	        return vbool(helpLhs.s == helpRhs.s);
+	        return vbool(helpLhs.s != helpRhs.s);
 	      }
-	      return vbool(false);
+	      return vbool(true);
       }
     case and(AExpr lhs, AExpr rhs): return vbool(eval(lhs, venv).b && eval(rhs, venv).b);
     case or(AExpr lhs, AExpr rhs): return vbool(eval(lhs, venv).b || eval(rhs, venv).b);
-
-    
-    // etc.
-    
     default: throw "Unsupported expression <e>";
   }
 }

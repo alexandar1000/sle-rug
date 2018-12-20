@@ -19,13 +19,13 @@ alias TEnv = rel[loc def, str name, str label, Type \type];
 Type resolveType(booleanType()) = tbool();
 Type resolveType(integerType()) = tint();
 Type resolveType(stringType()) = tstr();
-default Type aType2Type(AType _) = tunknown();
+default Type resolveType(AType _) = tunknown();
 
 
 // To avoid recursively traversing the form, use the `visit` construct
 // or deep match (e.g., `for (/question(...) := f) {...}` ) 
 TEnv collect(AForm f) {
-   return { <q.src, q.id, q.lbl, resolveType(q.questionType)> | /AQuestion q := f.questions, q has id, !(q has computedExpr) }; 
+   return { <q.src, q.id, q.lbl, resolveType(q.questionType)> | /AQuestion q := f.questions, q has id }; 
 }
 
 // returns a set which is a union of errors end messages for questions and expressions respectivey 
@@ -41,7 +41,7 @@ set[Message] check(AForm f, TEnv tenv, UseDef useDef) {
 set[Message] check(AQuestion q, TEnv tenv, UseDef useDef) {
   return { error("A question with the same name <q.id>, but a different type alreasy exists", q.src) | q has id, size(tenv[_, q.id, _]) > 1 } //tenv[_, q.id, _] will not return duplicate types, so if there are different types, the set returned will be of size greater than 1
   			+ { warning("A label with the same text <q.lbl> exists", q.src) | q has lbl, size((tenv<2, 0>)[q.lbl]) > 1 } //since src is the relation *key*, the set returned in tenv<2, 0> will contain all of the unique values of the label  
-  			+ { error("The declared type of the computed question <q.id> should match the type of the expression", q.src) | q has computedExpr, resolveType(q.resultType) != typeOf(q.computedExpr, tenv, useDef) }; 
+  			+ { error("The declared type of the computed question <q.id> should match the type of the expression", q.src) | q has computedExpr, resolveType(q.questionType) != typeOf(q.computedExpr, tenv, useDef) }; 
 }
 
 // Check operand compatibility with operators.
@@ -105,7 +105,7 @@ Type typeOf(AExpr e, TEnv tenv, UseDef useDef) {
     case integer(_): return tint();
     case string(_): return tstr();
     case brackets(AExpr expr): return typeOf(expr, tenv, useDef);
-    case not(_): return tint();
+    case not(_): return tbool();
     case mul(_, _): return tint();
     case div(_, _): return tint();
     case add(_, _): return tint();
@@ -118,10 +118,8 @@ Type typeOf(AExpr e, TEnv tenv, UseDef useDef) {
     case neq(_, _): return tbool();
     case and(_, _): return tbool();
     case or(_, _): return tbool();
-    case \true(): return tbool();
-    case \false(): return tbool();
+    default: return unknown();
   }
-  return tunknown(); 
 }
 
 /* 

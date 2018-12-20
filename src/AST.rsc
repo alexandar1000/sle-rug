@@ -12,15 +12,13 @@ data AForm(loc src = |tmp:///|)
 
 data AQuestion(loc src = |tmp:///|)
   = question(str lbl, str id, AType questionType)
-  | computed(str lbl, str id, AType resultType, AExpr computedExpr)
+  | computed(str lbl, str id, AType questionType, AExpr computedExpr)
   | block(list[AQuestion] questions)
   | ifThen(AExpr guard, AQuestion question)
   | ifThenElse(AExpr guard, AQuestion ifQuestion, AQuestion elseQuestion); 
 
 data AExpr(loc src = |tmp:///|)
   = ref(str name)
-  | \true()
-  | \false()
   | boolean(bool boolValue)
   | integer(int intValue)
   | string(str stringValue)
