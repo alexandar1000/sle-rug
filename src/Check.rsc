@@ -58,9 +58,9 @@ set[Message] check(AForm f, TEnv tenv, UseDef useDef) {
 // - duplicate labels should trigger a warning 
 // - the declared type computed questions should match the type of the expression.
 set[Message] check(AQuestion q, TEnv tenv, UseDef useDef) {
-  return { error("A question with the same name \"<q.id>\", but a different type alreasy exists", q.src) | q has id, size(tenv[_, q.id, _]) > 1} //tenv[_, q.id, _] will not return duplicate types, so if there are different types, the set returned will be of size greater thatn 1
-  			+ {warning("A label with the same text \"<q.lbl>\" exists", q.src) | q has lbl, size((tenv<2, 0>)[q.lbl]) > 1} //since src is the relation *key*, the set returned in tenv<2, 0> will contain all of the unique values of the label  
-  			+ {error("The declared type of the computed question \"<q.id>\" should match the type of the expression", q.src) | q has computedExpr, resolveType(q.questionType) != typeOf(q.computedExpr, tenv, useDef)}; 
+  return { error("A question with the same name <q.id>, but a different type alreasy exists", q.src) | q has id, size(tenv[_, q.id, _]) > 1} //tenv[_, q.id, _] will not return duplicate types, so if there are different types, the set returned will be of size greater thatn 1
+  			+ {warning("A label with the same text <q.lbl> exists", q.src) | q has lbl, size((tenv<2, 0>)[q.lbl]) > 1} //since src is the relation *key*, the set returned in tenv<2, 0> will contain all of the unique values of the label  
+  			+ {error("The declared type of the computed question <q.id> should match the type of the expression", q.src) | q has computedExpr, resolveType(q.questionType) != typeOf(q.computedExpr, tenv, useDef)}; 
 }
 
 // Check operand compatibility with operators.
