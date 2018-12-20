@@ -34,7 +34,7 @@ data AExpr(loc src = |tmp:///|)
   | lt(AExpr lhs, AExpr rhs)
   | geq(AExpr lhs, AExpr rhs)
   | leq(AExpr lhs, AExpr rhs)
-  | eq(AExpr lhs, AExpr rhs)
+  | eqls(AExpr lhs, AExpr rhs)
   | neq(AExpr lhs, AExpr rhs)
   | and(AExpr lhs, AExpr rhs)
   | or(AExpr lhs, AExpr rhs);

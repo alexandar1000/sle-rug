@@ -39,7 +39,7 @@ set[Message] check(AForm f, TEnv tenv, UseDef useDef) {
 // - duplicate labels should trigger a warning 
 // - the declared type computed questions should match the type of the expression.
 set[Message] check(AQuestion q, TEnv tenv, UseDef useDef) {
-  return { error("A question with the same name <q.id>, but a different type alreasy exists", q.src) | q has id, size(tenv[_, q.id, _]) > 1 } //tenv[_, q.id, _] will not return duplicate types, so if there are different types, the set returned will be of size greater thatn 1
+  return { error("A question with the same name <q.id>, but a different type alreasy exists", q.src) | q has id, size(tenv[_, q.id, _]) > 1 } //tenv[_, q.id, _] will not return duplicate types, so if there are different types, the set returned will be of size greater than 1
   			+ { warning("A label with the same text <q.lbl> exists", q.src) | q has lbl, size((tenv<2, 0>)[q.lbl]) > 1 } //since src is the relation *key*, the set returned in tenv<2, 0> will contain all of the unique values of the label  
   			+ { error("The declared type of the computed question <q.id> should match the type of the expression", q.src) | q has computedExpr, resolveType(q.questionType) != typeOf(q.computedExpr, tenv, useDef) }; 
 }
@@ -101,9 +101,9 @@ Type typeOf(AExpr e, TEnv tenv, UseDef useDef) {
       if (<u, loc d> <- useDef, <d, name, _, Type t> <- tenv) {
         return t;
       }
+    case boolean(_): return tbool();
     case integer(_): return tint();
     case string(_): return tstr();
-    case boolean(_): return tbool();
     case brackets(AExpr expr): return typeOf(expr, tenv, useDef);
     case not(_): return tint();
     case mul(_, _): return tint();
@@ -118,8 +118,8 @@ Type typeOf(AExpr e, TEnv tenv, UseDef useDef) {
     case neq(_, _): return tbool();
     case and(_, _): return tbool();
     case or(_, _): return tbool();
-    case \true(_, _): return tbool();
-    case \false(_, _): return tbool();
+    case \true(): return tbool();
+    case \false(): return tbool();
   }
   return tunknown(); 
 }
