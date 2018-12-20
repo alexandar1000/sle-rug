@@ -12,7 +12,7 @@ data AForm(loc src = |tmp:///|)
 
 data AQuestion(loc src = |tmp:///|)
   = question(str lbl, str id, AType questionType)
-  | computed(str lbl, str id, AType questionType, AExpr computedExpr)
+  | computed(str lbl, str id, AType resultType, AExpr computedExpr)
   | block(list[AQuestion] questions)
   | ifThen(AExpr guardExpr, AQuestion question)
   | ifThenElse(AExpr guardExpr, AQuestion question, AQuestion question); 
@@ -34,7 +34,7 @@ data AExpr(loc src = |tmp:///|)
   | lt(AExpr lhs, AExpr rhs)
   | geq(AExpr lhs, AExpr rhs)
   | leq(AExpr lhs, AExpr rhs)
-  | eqls(AExpr lhs, AExpr rhs)
+  | equal(AExpr lhs, AExpr rhs)
   | neq(AExpr lhs, AExpr rhs)
   | and(AExpr lhs, AExpr rhs)
   | or(AExpr lhs, AExpr rhs);

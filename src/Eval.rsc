@@ -14,8 +14,7 @@ import Resolve;
 data Value
   = vint(int n)
   | vbool(bool b)
-  | vstr(str s)
-  ;
+  | vstr(str s);
 
 // The value environment
 alias VEnv = map[str name, Value \value];
@@ -27,7 +26,23 @@ data Input
 // produce an environment which for each question has a default value
 // (e.g. 0 for int, "" for str etc.)
 VEnv initialEnv(AForm f) {
-  return ();
+  return ( q.id : defaultValue(q.questionType) | /AQuestion q := f.questions, q has questionType );
+}
+
+Value defaultValue(AType t) {
+	switch (t) {
+		case booleanType():
+			return vbool(false);
+		
+		case integerType():
+			return vint(0);
+		
+		case stringType():
+			return vstr("");
+		
+		default:
+			throw "Unsupported Type <t>";
+	}
 }
 
 
@@ -40,7 +55,14 @@ VEnv eval(AForm f, Input inp, VEnv venv) {
 }
 
 VEnv evalOnce(AForm f, Input inp, VEnv venv) {
-  return (); 
+	Aquestion question;
+	
+	for (AQuestion q := f) {
+	  if (q.id in inp) {
+	  	  return (venv + eval(q, inp, venv)); 
+	  }
+	}
+	return venv;
 }
 
 VEnv eval(AQuestion q, Input inp, VEnv venv) {
@@ -52,6 +74,7 @@ VEnv eval(AQuestion q, Input inp, VEnv venv) {
 Value eval(AExpr e, VEnv venv) {
   switch (e) {
     case ref(str x): return venv[x];
+
     
     // etc.
     
