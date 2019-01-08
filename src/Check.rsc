@@ -39,7 +39,7 @@ set[Message] check(AForm f, TEnv tenv, UseDef useDef) {
 // - duplicate labels should trigger a warning 
 // - the declared type computed questions should match the type of the expression.
 set[Message] check(AQuestion q, TEnv tenv, UseDef useDef) {
-  return { error("A question with the same name <q.id>, but a different type alreasy exists", q.src) | q has id, size(tenv[_, q.id, _]) > 1 } //tenv[_, q.id, _] will not return duplicate types, so if there are different types, the set returned will be of size greater than 1
+  return { error("A question with the same name <q.id>, but a different type already exists", q.src) | q has id, size(tenv[_, q.id, _]) > 1 } //tenv[_, q.id, _] will not return duplicate types, so if there are different types, the set returned will be of size greater than 1
   			+ { warning("A label with the same text <q.lbl> exists", q.src) | q has lbl, size((tenv<2, 0>)[q.lbl]) > 1 } //since src is the relation *key*, the set returned in tenv<2, 0> will contain all of the unique values of the label  
   			+ { error("The declared type of the computed question <q.id> should match the type of the expression", q.src) | q has computedExpr, resolveType(q.questionType) != typeOf(q.computedExpr, tenv, useDef) }; 
 }
@@ -79,7 +79,7 @@ set[Message] check(AExpr e, TEnv tenv, UseDef useDef) {
     case geq(AExpr lhs, AExpr rhs, src = loc u):
       msgs += { error(baseErr + "`\>=` expects operands of the type integer.", u) | !(typeOf(lhs, tenv, useDef) == tint() && typeOf(rhs, tenv, useDef) == tint()) };
 
-    case eq(AExpr lhs, AExpr rhs, src = loc u):
+    case equal(AExpr lhs, AExpr rhs, src = loc u):
       msgs += { error(baseErr + "`==` expects operands of the same type.", u) | !(typeOf(lhs, tenv, useDef) == typeOf(rhs, tenv, useDef)) };
 
     case neq(AExpr lhs, AExpr rhs, src = loc u):
@@ -114,11 +114,11 @@ Type typeOf(AExpr e, TEnv tenv, UseDef useDef) {
     case lt(_, _): return tbool();
     case geq(_, _): return tbool();
     case leq(_, _): return tbool();
-    case eq(_, _): return tbool();    
+    case equal(_, _): return tbool();    
     case neq(_, _): return tbool();
     case and(_, _): return tbool();
     case or(_, _): return tbool();
-    default: return unknown();
+    default: return tunknown();
   }
 }
 

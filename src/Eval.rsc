@@ -79,7 +79,7 @@ VEnv eval(AQuestion q, Input inp, VEnv venv) {
       
       //if it is a block we need to iterate through all questions in the block
       case block(list[AQuestion] questions): {
-      	for(question <- questions) {
+      	for(AQuestion question <- questions) {
       		venv += eval(question, inp, venv);
       	}
       	return venv;
