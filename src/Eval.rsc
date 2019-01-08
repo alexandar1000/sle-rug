@@ -73,7 +73,7 @@ VEnv eval(AQuestion q, Input inp, VEnv venv) {
       		return (inp.question : inp.\value);
       	}
       
-      //if it is computed, we need to evaluate what is computed and asign it to the venv
+      //if it is computed, we need to evaluate what is computed and assign it to the venv
       case computed(_, str identifier, _, AExpr expr):
       	return (identifier : eval(expr, venv));
       

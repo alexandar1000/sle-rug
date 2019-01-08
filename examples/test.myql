@@ -1,0 +1,23 @@
+form test {
+  "Input a number between 0 and 10" input_1: integer
+  if (!(input_1 < 0 || input_1 > 10)) { 
+	"Input a second number between 0 and 10" input_2: integer
+	if (input_2 >= 0 && input_2 <= 10) { 
+	  if (input_1 == input_2) {
+	  	"The numbers are equal, input_1 != input_2 + 1 is " equal_msg: boolean = (input_1) != (input_2 + 1)
+	  }
+	  else {
+	  	"Input_1 + input_2 equals: " add_numbers: integer = (input_1 * 2 + input_2 * 2) / 2 + 5 - 5
+	  }
+	}
+	else {
+	  "The second number is out of range" OOR_error_2: string
+	}
+  }
+  else {
+	"The first number is out of range" OOR_error_1: boolean = true
+	  if (true) {
+	  	"If statement works" if_test: boolean = true
+	  }
+  }
+}
