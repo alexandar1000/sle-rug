@@ -110,7 +110,7 @@ Value eval(AExpr e, VEnv venv) {
     case integer(int intValue): return vint(intValue);
     case string(str stringValue): return vstr(stringValue);
     case brackets(AExpr expr): return eval(expr, venv);
-    case not(AExpr expr): return vbool(!eval(expr).b);
+    case not(AExpr expr): return vbool(!eval(expr, venv).b);
     case mul(AExpr lhs, AExpr rhs): return vint(eval(lhs, venv).n * eval(rhs, venv).n);
     case div(AExpr lhs, AExpr rhs): return vint(eval(lhs, venv).n / eval(rhs, venv).n);
     case add(AExpr lhs, AExpr rhs): return vint(eval(lhs, venv).n + eval(rhs, venv).n);
