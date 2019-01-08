@@ -119,34 +119,8 @@ Value eval(AExpr e, VEnv venv) {
     case lt(AExpr lhs, AExpr rhs): return vbool(eval(lhs, venv).n < eval(rhs, venv).n);
     case geq(AExpr lhs, AExpr rhs): return vbool(eval(lhs, venv).n >= eval(rhs, venv).n);
     case leq(AExpr lhs, AExpr rhs): return vbool(eval(lhs, venv).n <= eval(rhs, venv).n);
-    case equal(AExpr lhs, AExpr rhs): {
-      Value helpLhs = eval(lhs, venv);
-      Value helpRhs = eval(rhs, venv);
-	      if (helpLhs has n && helpRhs has n) {
-	        return vbool(helpLhs.n == helpRhs.n);
-	      }
-	      if (helpLhs has b && helpRhs has b) {
-	        return vbool(helpLhs.b == helpRhs.b);
-	      }
-	      if (helpLhs has s && helpRhs has s) {
-	        return vbool(helpLhs.s == helpRhs.s);
-	      }
-	      return vbool(false);
-      }
-    case neq(AExpr lhs, AExpr rhs): {
-      Value helpLhs = eval(lhs, venv);
-      Value helpRhs = eval(rhs, venv);
-	      if (helpLhs has n && helpRhs has n) {
-	        return vbool(helpLhs.n != helpRhs.n);
-	      }
-	      if (helpLhs has b && helpRhs has b) {
-	        return vbool(helpLhs.b != helpRhs.b);
-	      }
-	      if (helpLhs has s && helpRhs has s) {
-	        return vbool(helpLhs.s != helpRhs.s);
-	      }
-	      return vbool(true);
-      }
+    case equal(AExpr lhs, AExpr rhs): return vbool(eval(lhs, venv) == eval(rhs, venv)); // Let rascal's == operator handle type checking
+    case neq(AExpr lhs, AExpr rhs): return vbool(eval(lhs, venv) != eval(rhs, venv)); // Let rascal's == operator handle type checking
     case and(AExpr lhs, AExpr rhs): return vbool(eval(lhs, venv).b && eval(rhs, venv).b);
     case or(AExpr lhs, AExpr rhs): return vbool(eval(lhs, venv).b || eval(rhs, venv).b);
     default: throw "Unsupported expression <e>";
