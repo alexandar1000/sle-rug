@@ -1,0 +1,55 @@
+<html>
+    <head>
+        <title>Test Site</title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <!-- Latest compiled and minified CSS -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+
+        <!-- jQuery library -->
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+        <!-- Popper JS -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
+
+        <!-- Latest compiled JavaScript -->
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
+    </head>
+
+    <body>          
+        <div class="container mt-5">
+            <h1>Form name</h1>
+
+            <!-- Different types of questions, computed questions are disabled and have a value attribute, the id 
+            	 is that of the question likewise for the label. -->
+            <form>
+                <div class="form-group">
+				    <label for="question_id">String Question Label</label>
+				    <input type="text" name="question_id" class="form-control" id="question_id">
+                </div>
+                <div class="form-group">
+				    <label for="question_id">Integer Question Label</label>
+				    <input type="number" name="question_id" class="form-control" id="question_id">
+                </div>
+                <div class="form-group">
+				    <label for="question_id">Computed Integer question label</label>
+				    <input type="number" name="question_id" class="form-control" id="question_id" value="22" disabled>
+                </div>
+				<div class="form-group form-check">
+					<label class="form-check-label">
+						<input type="checkbox" name="question_id" class="form-check-input">
+						Boolean Question Label
+					</label>
+				</div>
+				<div class="form-group form-check">
+					<label class="form-check-label">
+						<input type="checkbox" name="question_id" class="form-check-input" checked="true" disabled>
+						Computed Boolean Question Label
+					</label>
+				</div>
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </form>
+        </div>
+    </body>
+</html>

@@ -11,13 +11,13 @@ form test {
 	  }
 	}
 	else {
-	  "The second number is out of range" OOR_error_2: string
+	  "The second number is out of range" OOR_error_2: boolean = true
 	}
   }
   else {
 	"The first number is out of range" OOR_error_1: boolean = true
-	  if (true) {
-	  	"If statement works" if_test: boolean = true
-	  }
+	if (true) {
+	  "If statement works" if_test: boolean = true
+	}
   }
 }
