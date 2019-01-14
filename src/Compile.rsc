@@ -33,7 +33,7 @@ HTML5Node form2html(AForm f) {
   		     script(src("https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js")),
   		     script(src("https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js")),
   		     // Generated JavaScript file
-  		     script(src(f.src[extension="js"].top))
+  		     script(src("<f.name>.js"))
   		   ),
   		   body(
   		     div(class("container mt-5"),
@@ -53,49 +53,6 @@ HTML5Node questions2html(HTML5Node parent, list[AQuestion] questions) {
 	return parent;
 }
 
-HTML5Node question2html(AQuestion q, AType t) {
-	switch (t) {
-		case stringType():
-			return div(class("form-group"),
-				     label(\for(q.id), q.lbl),
-				     input(\type("text"), name(q.id), class("form-control"), id(q.id))
-				   );
-		case integerType():
-			return div(class("form-group"),
-				     label(\for(q.id), q.lbl),
-				     input(\type("number"), name(q.id), class("form-control"), id(q.id))
-				   );
-		case booleanType():
-			return div(class("form-group form-check"),
-				     label(class("form-check-label"), 
-				       input(\type("checkbox"), name(q.id), class("form-check-input"), id(q.id)),
-				       q.lbl
-				     )
-				   );
-		default: throw "Unsupported type <t>";
-	}
-}
-
-HTML5Node computed2html(AQuestion q, AType t) {
-	switch (t) {
-		case integerType():
-			return div(class("form-group"),
-				     label(\for(q.id), q.lbl),
-				     // TODO: add js to evaluate and set value dynamically
-				     input(\type("number"), name(q.id), class("form-control"), id(q.id), \value("22"), disabled(true))
-				   );
-		case booleanType():
-			return div(class("form-group form-check"),
-				     label(class("form-check-label"), 
-				       // TODO: add js to evaluate and set value dynamically
-				       input(\type("checkbox"), name(q.id), class("form-check-input"), id(q.id), \value("true"), disabled(true)),
-				       q.lbl
-				     )
-				   );
-		default: throw "Unsupported type <t>";
-	}
-}
-
 HTML5Node question2html(AQuestion q) {
 	switch (q) {
 		case question(str lbl, str id, AType questionType):
@@ -112,6 +69,49 @@ HTML5Node question2html(AQuestion q) {
 			return div(ifDiv, elseDiv);
 		}
 		default: throw "Unsupported question <q>";
+	}
+}
+
+HTML5Node question2html(AQuestion q, AType t) {
+	switch (t) {
+		case stringType():
+			return div(class("form-group"), id(q.id),
+				     label(\for("<q.id>_input"), q.lbl),
+				     input(\type("text"), class("form-control"), id("<q.id>_input"))
+				   );
+		case integerType():
+			return div(class("form-group"), id(q.id),
+				     label(\for("<q.id>_input"), q.lbl),
+				     input(\type("number"), class("form-control"), id("<q.id>_input"))
+				   );
+		case booleanType():
+			return div(class("form-group form-check"), id(q.id),
+				     label(class("form-check-label"), 
+				       input(\type("checkbox"), class("form-check-input"), id("<q.id>_input")),
+				       q.lbl
+				     )
+				   );
+		default: throw "Unsupported type <t>";
+	}
+}
+
+HTML5Node computed2html(AQuestion q, AType t) {
+	switch (t) {
+		case integerType():
+			return div(class("form-group"), id(q.id),
+				     label(\for("<q.id>_input"), q.lbl),
+				     // TODO: add js to evaluate and set value dynamically
+				     input(\type("number"), class("form-control"), id("<q.id>_input"), \value(0), disabled(true))
+				   );
+		case booleanType():
+			return div(class("form-group form-check"), id(q.id),
+				     label(class("form-check-label"), 
+				       // TODO: add js to evaluate and set value dynamically
+				       input(\type("checkbox"), class("form-check-input"), id("<q.id>_input"), checked(false), disabled(true)),
+				       q.lbl
+				     )
+				   );
+		default: throw "Unsupported type <t>";
 	}
 }
 

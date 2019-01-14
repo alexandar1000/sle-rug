@@ -5,11 +5,12 @@ import Resolve;
 import Check;
 import Eval;
 import ParseTree;
+import Compile;
 
 
 
 
-pt = parse(#Form, |project://QL/examples/binary.myql|);
+pt = parse(#Form, |project://QL/examples/test.myql|);
 ast = cst2ast(pt);
 res = resolve(ast);
 ch = check(ast, collect(ast), res);
