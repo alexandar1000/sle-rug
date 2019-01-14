@@ -119,12 +119,38 @@ str form2js(AForm f) {
   str jsResult = "";
   for (AQuestion q <- f.questions) {
 		jsResult += question2js(q);
-		jsResult += ";\n";
+		//jsResult += ";\n";
 	}
+	jsResult += "function handleForm() {alert(\'TEST\')}\n";
+	jsResult += "$(function() {\n\t <jsMain(f)>})\n";
 	return jsResult; 
 }
 
+
+str jsMain(AForm f) {
+	str funct = "";
+	for (/AQuestion q := f.questions, q has id) {
+		funct += "$(\'#<q.id>\').hide();\n";
+		if (!(q has computedExpr)) {
+			if (q.questionType == booleanType()) {
+				funct += "$(\'#<q.id>_input\').click(function() {\n\t if ($(this).is(\':checked\')) {\n\thandleForm();\n}\n});\n";
+			} else {
+				funct += "$(\'#<q.id>_input\').on(\'input\', function() {\n\thandleForm();\n});\n";
+			}
+		}
+	}
+	for (AQuestion q <- f.questions, q has id) {
+		funct += "$(\'#<q.id>\').show();\n";
+	}
+	
+	return funct;
+}
+
+
+
 str question2js(AQuestion q) {
+	return "";
+  str jsFile = "function handleForm() {";
   switch (q) {
 		case question(str lbl, str id, AType questionType):
 			return "";
@@ -149,7 +175,10 @@ str question2js(AQuestion q) {
 		}
 		default: throw "Unsupported question <q>";
 	}
+	jsFile += "\n}\n$(function() {})";
+	return "";
 }
+
 
 str expr2js(AExpr e) {
 	switch (e) {
