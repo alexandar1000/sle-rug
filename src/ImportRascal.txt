@@ -5,7 +5,7 @@ import Resolve;
 import Check;
 import Eval;
 import ParseTree;
-
+import Compile;
 
 
 

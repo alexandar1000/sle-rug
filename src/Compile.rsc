@@ -33,7 +33,7 @@ HTML5Node form2html(AForm f) {
   		     script(src("https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js")),
   		     script(src("https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js")),
   		     // Generated JavaScript file
-  		     script(src(f.src[extension="js"].top))
+  		     script(src("<f.name>.js"))
   		   ),
   		   body(
   		     div(class("container mt-5"),
@@ -116,13 +116,62 @@ HTML5Node question2html(AQuestion q) {
 }
 
 str form2js(AForm f) {
-  return "";
+  str jsResult = "";
+  for (AQuestion q <- f.questions) {
+		jsResult += question2js(q);
+		jsResult += ";\n";
+	}
+	return jsResult; 
 }
 
 str question2js(AQuestion q) {
-
+  switch (q) {
+		case question(str lbl, str id, AType questionType):
+			return "";
+		case computed(str lbl, str id, AType questionType, AExpr computedExpr):
+			return "";
+		case block(list[AQuestion] questions): {
+			str jsResult = "";
+		    for (AQuestion q <- questions) {
+				jsResult += question2js(q);
+				jsResult += ";\n";
+			} 
+			return jsResult;
+		}
+		case ifThen(AExpr guard, AQuestion question): {
+				println(question2js(question));
+				return expr2js(guard);
+			}
+		case ifThenElse(AExpr guard, AQuestion ifQuestion, AQuestion elseQuestion): {
+			println(question2js(ifQuestion));
+			println(question2js(elseQuestion));
+			return expr2js(guard);
+		}
+		default: throw "Unsupported question <q>";
+	}
 }
 
 str expr2js(AExpr e) {
-
+	switch (e) {
+	//TODO
+	case ref(str x): return x;
+    case boolean(bool boolValue): return "<boolValue>";
+    case integer(int intValue): return "<intValue>";
+    case string(str stringValue): return "<stringValue>";
+    case brackets(AExpr expr): return "(<expr2js(expr)>)";
+    case not(AExpr expr): return "!(<expr2js(expr)>)";
+    case mul(AExpr lhs, AExpr rhs): return "<expr2js(lhs)> * <expr2js(rhs)>";
+    case div(AExpr lhs, AExpr rhs): return "<expr2js(lhs)> / <expr2js(rhs)>";
+    case add(AExpr lhs, AExpr rhs): return "<expr2js(lhs)> + <expr2js(rhs)>";
+    case sub(AExpr lhs, AExpr rhs): return "<expr2js(lhs)> - <expr2js(rhs)>";
+    case gt(AExpr lhs, AExpr rhs): return "<expr2js(lhs)> \> <expr2js(rhs)>";
+    case lt(AExpr lhs, AExpr rhs): return "<expr2js(lhs)> \< <expr2js(rhs)>";
+    case geq(AExpr lhs, AExpr rhs): return "<expr2js(lhs)> \>= <expr2js(rhs)>";
+    case leq(AExpr lhs, AExpr rhs): return "<expr2js(lhs)> \<= <expr2js(rhs)>";
+    case equal(AExpr lhs, AExpr rhs): return "<expr2js(lhs)> == <expr2js(rhs)>"; // Let rascal's == operator handle type checking
+    case neq(AExpr lhs, AExpr rhs): return "<expr2js(lhs)> != <expr2js(rhs)>"; // Let rascal's == operator handle type checking
+    case and(AExpr lhs, AExpr rhs): return "<expr2js(lhs)> && <expr2js(rhs)>";
+    case or(AExpr lhs, AExpr rhs): return "<expr2js(lhs)> || <expr2js(rhs)>";
+    default: throw "Unsupported expression <e>";
+  }
 }
