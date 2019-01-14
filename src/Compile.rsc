@@ -33,7 +33,7 @@ HTML5Node form2html(AForm f) {
   		     script(src("https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js")),
   		     script(src("https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js")),
   		     // Generated JavaScript file
-  		     script(src("<f.name>.js"))
+  		     script(src(f.src[extension="js"].file))
   		   ),
   		   body(
   		     div(class("container mt-5"),
@@ -107,7 +107,7 @@ HTML5Node computed2html(AQuestion q, AType t) {
 			return div(class("form-group form-check"), id(q.id),
 				     label(class("form-check-label"), 
 				       // TODO: add js to evaluate and set value dynamically
-				       input(\type("checkbox"), class("form-check-input"), id("<q.id>_input"), checked(false), disabled(true)),
+				       input(\type("checkbox"), class("form-check-input"), id("<q.id>_input"), disabled(true)),
 				       q.lbl
 				     )
 				   );
@@ -116,12 +116,18 @@ HTML5Node computed2html(AQuestion q, AType t) {
 }
 
 str form2js(AForm f) {
-  str jsResult = "";
-  for (AQuestion q <- f.questions) {
-		jsResult += question2js(q);
-		//jsResult += ";\n";
+    str jsResult = "function handleForm() {\n\n";
+    for (/AQuestion q := f.questions, q has id) {
+		jsResult += "$(\'#<q.id>\').hide();\n";
 	}
-	jsResult += "function handleForm() {alert(\'TEST\')}\n";
+	for (AQuestion q <- f.questions, q has id) {
+		jsResult += "$(\'#<q.id>\').show();\n";
+	}
+	jsResult += "\n";
+    for (AQuestion q <- f.questions) {
+		jsResult += question2js(q);
+	}
+	jsResult += "\n}\n\n";
 	jsResult += "$(function() {\n\t <jsMain(f)>})\n";
 	return jsResult; 
 }
@@ -132,8 +138,8 @@ str jsMain(AForm f) {
 	for (/AQuestion q := f.questions, q has id) {
 		funct += "$(\'#<q.id>\').hide();\n";
 		if (!(q has computedExpr)) {
-			if (q.questionType == booleanType()) {
-				funct += "$(\'#<q.id>_input\').click(function() {\n\t if ($(this).is(\':checked\')) {\n\thandleForm();\n}\n});\n";
+			if (booleanType() := q.questionType) {
+				funct += "$(\'#<q.id>_input\').click(function() {\n\thandleForm();\n});\n";
 			} else {
 				funct += "$(\'#<q.id>_input\').on(\'input\', function() {\n\thandleForm();\n});\n";
 			}
@@ -149,33 +155,43 @@ str jsMain(AForm f) {
 
 
 str question2js(AQuestion q) {
-	return "";
-  str jsFile = "function handleForm() {";
   switch (q) {
-		case question(str lbl, str id, AType questionType):
-			return "";
-		case computed(str lbl, str id, AType questionType, AExpr computedExpr):
-			return "";
+		case question(str lbl, str id, AType questionType): {
+			if (booleanType() := questionType) {
+				return "var <id> = $(\'#<id>_input\').is(\':checked\');\n";
+			} else {
+				return "var <id> = $(\'#<id>_input\').val();\n";
+			}
+		}
+		case computed(str lbl, str id, AType questionType, AExpr computedExpr): {
+			if (booleanType() := questionType) {
+				return "$(\'#<id>_input\').prop(\'checked\', <expr2js(computedExpr)>)";
+			} else {
+				return "$(\'#<id>_input\').val(<expr2js(computedExpr)>)";
+			}
+		}
 		case block(list[AQuestion] questions): {
-			str jsResult = "";
+			str jsResult = "{\n";
 		    for (AQuestion q <- questions) {
-				jsResult += question2js(q);
-				jsResult += ";\n";
+		    	if (q has id) {
+		    		jsResult += "$(\'#<q.id>\').show();\n";
+		    	}
+				jsResult += question2js(q) + "\n";
 			} 
-			return jsResult;
+			return jsResult + "}";
 		}
 		case ifThen(AExpr guard, AQuestion question): {
-				println(question2js(question));
-				return expr2js(guard);
-			}
+			str jsResult = "";
+			if (q has id) {
+	    		jsResult += "$(\'#<question.id>\').hide();\n";
+	    	}
+			return jsResult + "if (<expr2js(guard)>) <question2js(question)>";
+		}
 		case ifThenElse(AExpr guard, AQuestion ifQuestion, AQuestion elseQuestion): {
-			println(question2js(ifQuestion));
-			println(question2js(elseQuestion));
-			return expr2js(guard);
+			return "if (<expr2js(guard)>) <question2js(ifQuestion)> else <question2js(elseQuestion)>";
 		}
 		default: throw "Unsupported question <q>";
 	}
-	jsFile += "\n}\n$(function() {})";
 	return "";
 }
 
