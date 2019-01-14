@@ -54,7 +54,6 @@ AExpr cst2ast(Expr e) {
     case (Expr)`<Str s>`:
       return string("<s>", src=e@\loc);
     case (Expr)`( <Expr e0> )`:
-      //return cst2ast(e0);
       return brackets(cst2ast(e0));
     case (Expr)`! <Expr e0>`:
       return not(cst2ast(e0), src=e@\loc);

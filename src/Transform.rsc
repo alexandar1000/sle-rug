@@ -30,11 +30,12 @@ AForm flatten(AForm f) {
  * Write a refactoring transformation that consistently renames all occurrences of the same name.
  * Use the results of name resolution to find the equivalence class of a name.
  *
- * Bonus: do it on concrete syntax trees.
  */
  
- AForm rename(AForm f, loc useOrDef, str newName, UseDef useDef) {
-   return f; 
+ AForm rename(Form f, loc useOrDef, str newName, UseDef useDef) {
+ 	ast = cst2ast(f);
+ 	
+ 	return f;
  } 
  
  
