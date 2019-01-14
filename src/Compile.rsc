@@ -100,13 +100,11 @@ HTML5Node computed2html(AQuestion q, AType t) {
 		case integerType():
 			return div(class("form-group"), id(q.id),
 				     label(\for("<q.id>_input"), q.lbl),
-				     // TODO: add js to evaluate and set value dynamically
 				     input(\type("number"), class("form-control"), id("<q.id>_input"), \value(0), disabled(true))
 				   );
 		case booleanType():
 			return div(class("form-group form-check"), id(q.id),
 				     label(class("form-check-label"), 
-				       // TODO: add js to evaluate and set value dynamically
 				       input(\type("checkbox"), class("form-check-input"), id("<q.id>_input"), disabled(true)),
 				       q.lbl
 				     )
@@ -120,13 +118,16 @@ str form2js(AForm f) {
     for (/AQuestion q := f.questions, q has id) {
 		jsResult += "$(\'#<q.id>\').hide();\n";
 	}
+	
 	for (AQuestion q <- f.questions, q has id) {
 		jsResult += "$(\'#<q.id>\').show();\n";
 	}
+	
 	jsResult += "\n";
     for (AQuestion q <- f.questions) {
 		jsResult += question2js(q);
 	}
+	
 	jsResult += "\n}\n\n";
 	jsResult += "$(function() {\n\t <jsMain(f)>})\n";
 	return jsResult; 
@@ -155,7 +156,7 @@ str jsMain(AForm f) {
 
 
 str question2js(AQuestion q) {
-  switch (q) {
+	switch (q) {
 		case question(str lbl, str id, AType questionType): {
 			if (booleanType() := questionType) {
 				return "var <id> = $(\'#<id>_input\').is(\':checked\');\n";
@@ -192,31 +193,29 @@ str question2js(AQuestion q) {
 		}
 		default: throw "Unsupported question <q>";
 	}
-	return "";
 }
 
 
 str expr2js(AExpr e) {
 	switch (e) {
-	//TODO
-	case ref(str x): return x;
-    case boolean(bool boolValue): return "<boolValue>";
-    case integer(int intValue): return "<intValue>";
-    case string(str stringValue): return "<stringValue>";
-    case brackets(AExpr expr): return "(<expr2js(expr)>)";
-    case not(AExpr expr): return "!(<expr2js(expr)>)";
-    case mul(AExpr lhs, AExpr rhs): return "<expr2js(lhs)> * <expr2js(rhs)>";
-    case div(AExpr lhs, AExpr rhs): return "<expr2js(lhs)> / <expr2js(rhs)>";
-    case add(AExpr lhs, AExpr rhs): return "<expr2js(lhs)> + <expr2js(rhs)>";
-    case sub(AExpr lhs, AExpr rhs): return "<expr2js(lhs)> - <expr2js(rhs)>";
-    case gt(AExpr lhs, AExpr rhs): return "<expr2js(lhs)> \> <expr2js(rhs)>";
-    case lt(AExpr lhs, AExpr rhs): return "<expr2js(lhs)> \< <expr2js(rhs)>";
-    case geq(AExpr lhs, AExpr rhs): return "<expr2js(lhs)> \>= <expr2js(rhs)>";
-    case leq(AExpr lhs, AExpr rhs): return "<expr2js(lhs)> \<= <expr2js(rhs)>";
-    case equal(AExpr lhs, AExpr rhs): return "<expr2js(lhs)> == <expr2js(rhs)>"; // Let rascal's == operator handle type checking
-    case neq(AExpr lhs, AExpr rhs): return "<expr2js(lhs)> != <expr2js(rhs)>"; // Let rascal's == operator handle type checking
-    case and(AExpr lhs, AExpr rhs): return "<expr2js(lhs)> && <expr2js(rhs)>";
-    case or(AExpr lhs, AExpr rhs): return "<expr2js(lhs)> || <expr2js(rhs)>";
-    default: throw "Unsupported expression <e>";
+		case ref(str x): return x;
+	    case boolean(bool boolValue): return "<boolValue>";
+	    case integer(int intValue): return "<intValue>";
+	    case string(str stringValue): return "<stringValue>";
+	    case brackets(AExpr expr): return "(<expr2js(expr)>)";
+	    case not(AExpr expr): return "!(<expr2js(expr)>)";
+	    case mul(AExpr lhs, AExpr rhs): return "<expr2js(lhs)> * <expr2js(rhs)>";
+	    case div(AExpr lhs, AExpr rhs): return "<expr2js(lhs)> / <expr2js(rhs)>";
+	    case add(AExpr lhs, AExpr rhs): return "<expr2js(lhs)> + <expr2js(rhs)>";
+	    case sub(AExpr lhs, AExpr rhs): return "<expr2js(lhs)> - <expr2js(rhs)>";
+	    case gt(AExpr lhs, AExpr rhs): return "<expr2js(lhs)> \> <expr2js(rhs)>";
+	    case lt(AExpr lhs, AExpr rhs): return "<expr2js(lhs)> \< <expr2js(rhs)>";
+	    case geq(AExpr lhs, AExpr rhs): return "<expr2js(lhs)> \>= <expr2js(rhs)>";
+	    case leq(AExpr lhs, AExpr rhs): return "<expr2js(lhs)> \<= <expr2js(rhs)>";
+	    case equal(AExpr lhs, AExpr rhs): return "<expr2js(lhs)> == <expr2js(rhs)>"; // Let rascal's == operator handle type checking
+	    case neq(AExpr lhs, AExpr rhs): return "<expr2js(lhs)> != <expr2js(rhs)>"; // Let rascal's == operator handle type checking
+	    case and(AExpr lhs, AExpr rhs): return "<expr2js(lhs)> && <expr2js(rhs)>";
+	    case or(AExpr lhs, AExpr rhs): return "<expr2js(lhs)> || <expr2js(rhs)>";
+	    default: throw "Unsupported expression <e>";
   }
 }
