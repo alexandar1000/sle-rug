@@ -1,0 +1,11 @@
+form test2 {
+	"q0" q0: integer
+	"a" a: boolean = true
+	"b" b: boolean = true
+	if (a) {
+		if (b) {
+			"q1" q1: integer
+		}
+		"q2" q2: integer
+	}
+}

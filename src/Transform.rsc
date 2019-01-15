@@ -26,7 +26,33 @@ import ParseTree;
  */
  
 AForm flatten(AForm f) {
-  return f; 
+	list[AQuestion] qs = [];
+	for (AQuestion q <- f.questions) {
+		qs += flatten(q);
+	}
+	return form(f.name, qs, src=f.src); 
+}
+
+// TODO: implement if (a && b) q1: "" int; / if (a) q2: "" int; flattening
+AQuestion flatten(AQuestion q) {
+	switch (q) {
+		case question(str lbl, str id, AType questionType):
+			return ifThen(boolean(true), q);
+		case computed(str lbl, str id, AType questionType, AExpr computedExpr):
+			return ifThen(boolean(true), q);
+		case block(list[AQuestion] questions): {
+			list[AQuestion] qs = [];
+			for (AQuestion q1 <- questions) {
+				qs += flatten(q1);
+			}
+			return block(qs);
+		}
+		case ifThen(AExpr guard, AQuestion question):
+			return ifThen(guard, flatten(question));
+		case ifThenElse(AExpr guard, AQuestion ifQuestion, AQuestion elseQuestion):
+			return ifThenElse(guard, flatten(ifQuestion), flatten(elseQuestion));
+		default: throw "Unsupported question <q>";
+	}
 }
 
 /* Rename refactoring:

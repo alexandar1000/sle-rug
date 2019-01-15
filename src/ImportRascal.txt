@@ -6,8 +6,7 @@ import Check;
 import Eval;
 import ParseTree;
 import Compile;
-
-
+import Transform;
 
 
 pt = parse(#Form, |project://QL/examples/test.myql|);
@@ -16,3 +15,6 @@ res = resolve(ast);
 ch = check(ast, collect(ast), res);
 //Input inpt = input("x_1_10", vbool(true));
 ev = eval(ast, input("x_1_10", vbool(true)), initialEnv(ast));
+comp = compile(ast);
+rn = rename(pt, |project://QL/examples/test.myql|(174,7,<5,5>,<5,12>), "TEST", res);
+flat = flatten(ast);
