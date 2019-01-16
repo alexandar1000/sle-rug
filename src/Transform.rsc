@@ -28,32 +28,44 @@ import ParseTree;
 AForm flatten(AForm f) {
 	list[AQuestion] qs = [];
 	for (AQuestion q <- f.questions) {
-		qs += flatten(q);
+		qs += flatten(boolean(true), q);
 	}
 	return form(f.name, qs, src=f.src); 
 }
 
-// TODO: implement if (a && b) q1: "" int; / if (a) q2: "" int; flattening
-AQuestion flatten(AQuestion q) {
+list[AQuestion] flatten(AExpr guard, AQuestion q) {
 	switch (q) {
 		case question(str lbl, str id, AType questionType):
-			return ifThen(boolean(true), q);
+			return [ ifThen(guard, q) ];
 		case computed(str lbl, str id, AType questionType, AExpr computedExpr):
-			return ifThen(boolean(true), q);
-		case block(list[AQuestion] questions): {
+			return [ ifThen(guard, q) ];
+		case block(list[AQuestion] questions):
+			return flattenBlock(boolean(true), block(questions));
+		case ifThen(AExpr innerGuard, AQuestion question):
+			return flattenBlock(and(guard, innerGuard), question);
+		case ifThenElse(AExpr innerGuard, AQuestion ifQuestion, AQuestion elseQuestion): {
 			list[AQuestion] qs = [];
-			for (AQuestion q1 <- questions) {
-				qs += flatten(q1);
-			}
-			return block(qs);
+			qs += flattenBlock(and(guard, innerGuard), ifQuestion);
+			qs += flattenBlock(and(guard, not(innerGuard)), elseQuestion);
+			return qs;
 		}
-		case ifThen(AExpr guard, AQuestion question):
-			return ifThen(guard, flatten(question));
-		case ifThenElse(AExpr guard, AQuestion ifQuestion, AQuestion elseQuestion):
-			return ifThenElse(guard, flatten(ifQuestion), flatten(elseQuestion));
 		default: throw "Unsupported question <q>";
 	}
 }
+
+list[AQuestion] flattenBlock(AExpr guard, AQuestion block) {
+	list[AQuestion] flattenedQs = [];
+	switch (block) {
+		case block(list[AQuestion] qs): {
+			for (AQuestion q <- qs) {
+				flattenedQs += flatten(guard, q);
+			}
+			return flattenedQs;
+		}
+		default: return flatten(guard, block);
+	}
+}
+
 
 /* Rename refactoring:
  *

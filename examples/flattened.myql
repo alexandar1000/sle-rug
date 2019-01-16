@@ -1,4 +1,5 @@
 form flattened {
+	// Flattened version of flatten.myql
 	if (true) {
 		"q0" q0: integer
 	}
@@ -11,39 +12,39 @@ form flattened {
 		"b" b: boolean
 	}
 	
-	if (a) {
+	if (true && a) {
 		"c" c: boolean
 	}
 	
-	if (a) {
+	if (true && a) {
 		"e" e: boolean
 	}
 	
-	if (a) {
+	if (true && a) {
 		"q6" q6: integer
 	}
 	
-	if (a && b) {
+	if ((true && a) && b) {
 		"q1" q1: integer
 	}
 	
-	if (a && c) {
+	if ((true && a) && c) {
 		"q2" q2: integer
 	}
 	
-	if (a && c) {
+	if ((true && a) && c) {
 		"d" d: boolean
 	}
 	
-	if ((a && c) && d) {
+	if (((true && a) && c) && d) {
 		"q3" q3: integer
 	}
 	
-	if (a && e) {
+	if ((true && a) && e) {
 		"q4" q4: integer
 	}
 	
-	if (a && !e) {
+	if ((true && a) && !e) {
 		"q5" q5: integer
 	}
 }
