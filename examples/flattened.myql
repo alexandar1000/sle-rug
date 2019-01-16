@@ -13,7 +13,13 @@ form flattened {
 	
 	if (a) {
 		"c" c: boolean
+	}
+	
+	if (a) {
 		"e" e: boolean
+	}
+	
+	if (a) {
 		"q6" q6: integer
 	}
 	
@@ -23,6 +29,9 @@ form flattened {
 	
 	if (a && c) {
 		"q2" q2: integer
+	}
+	
+	if (a && c) {
 		"d" d: boolean
 	}
 	
