@@ -1,11 +1,69 @@
-form test2 {
+form flatten {
 	"q0" q0: integer
-	"a" a: boolean = true
-	"b" b: boolean = true
+	"a" a: boolean
+	"b" b: boolean
 	if (a) {
+		"c" c: boolean
 		if (b) {
 			"q1" q1: integer
 		}
-		"q2" q2: integer
+		
+		if (c) {
+			"q2" q2: integer
+			"d" d: boolean
+			if (d) {
+				"q3" q3: integer
+			}
+		}
+		
+		"e" e: boolean
+		if (e) {
+			"q4" q4: integer
+		} else {
+			"q5" q5: integer
+		}
+		
+		"q6" q6: integer
 	}
 }
+
+//form flattened {
+//	if (true) {
+//		"q0" q0: integer
+//	}
+//	
+//	if (true) {
+//		"a" a: boolean
+//	}
+//	
+//	if (true) {
+//		"b" b: boolean
+//	}
+//	
+//	if (a) {
+//		"c" c: boolean
+//		"e" e: boolean
+//		"q6" q6: integer
+//	}
+//	
+//	if (a && b) {
+//		"q1" q1: integer
+//	}
+//	
+//	if (a && c) {
+//		"q2" q2: integer
+//		"d" d: boolean
+//	}
+//	
+//	if ((a && c) && d) {
+//		"q3" q3: integer
+//	}
+//	
+//	if (a && e) {
+//		"q4" q4: integer
+//	}
+//	
+//	if (a && !e) {
+//		"q5" q5: integer
+//	}
+//}
