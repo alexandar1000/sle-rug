@@ -123,9 +123,17 @@ Form rename(Form f, loc useOrDef, str newName, UseDef useDef) {
 		return f;
 	}
 	
+	// Check if name is not in use already
+	Id newId = parse(#Id, newName);	
+	for (/Id x := f) {
+		if (x == newId) {
+			throw "Name already exists!";
+		}
+	}
+	
 	// Traverse form and rename id's in toRename to newName
   	return visit(f) {
-  		case Id x => parse(#Id, newName) 
+  		case Id x => newId
   			when x@\loc in toRename
 	}
 	
