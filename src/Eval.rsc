@@ -4,10 +4,8 @@ import AST;
 import Resolve;
 
 /*
- * Implement big-step semantics for QL
+ * Big-step semantics for QL
  */
- 
-// NB: Eval may assume the form is type- and name-correct.
 
 
 // Semantic domain for expressions (values)
@@ -23,7 +21,7 @@ alias VEnv = map[str name, Value \value];
 data Input
   = input(str question, Value \value);
   
-// produce an environment which for each question has a default value
+// Produce an environment which for each question has a default value
 // (e.g. 0 for int, "" for str etc.)
 VEnv initialEnv(AForm f) {
   //TODO: decide on computed questions, should they be initialized with an initial value, or added to the venv additionally
@@ -64,20 +62,20 @@ VEnv evalOnce(AForm f, Input inp, VEnv venv) {
 }
 
 VEnv eval(AQuestion q, Input inp, VEnv venv) {
-  // evaluate conditions for branching,
-  // evaluate inp and computed questions to return updated VEnv
+  // Evaluate conditions for branching,
+  // Evaluate inp and computed questions to return updated VEnv
     switch (q) {
-    //if it is an ordinary question, we should update the value of the question in the venv
+    // If it is an ordinary question, we should update the value of the question in the venv
       case question(_, str identifier, _): 
       	if (identifier == inp.question) {
       		return (inp.question : inp.\value);
       	}
       
-      //if it is computed, we need to evaluate what is computed and assign it to the venv
+      // If it is computed, we need to evaluate what is computed and assign it to the venv
       case computed(_, str identifier, _, AExpr expr):
       	return (identifier : eval(expr, venv));
       
-      //if it is a block we need to iterate through all questions in the block
+      // If it is a block we need to iterate through all questions in the block
       case block(list[AQuestion] questions): {
       	for(AQuestion question <- questions) {
       		venv += eval(question, inp, venv);
@@ -85,13 +83,13 @@ VEnv eval(AQuestion q, Input inp, VEnv venv) {
       	return venv;
       }
       
-      //if if-then question, evaluate the guard and recursively call if it is true
+      // If if-then question, evaluate the guard and recursively call if it is true
       case ifThen(AExpr guard, AQuestion question):
       	if (eval(guard, venv) == vbool(true)) {
           return eval(question, inp, venv);
       	}
       
-      //if if-then-else question, evaluate the guard and recursively call the adequate question
+      // If if-then-else question, evaluate the guard and recursively call the adequate question
       case ifThenElse(AExpr guard, AQuestion ifQ, AQuestion elseQ):
         if (eval(guard, venv) == vbool(true)) {
           return eval(ifQ, inp, venv);

@@ -46,6 +46,8 @@ list[AQuestion] flatten(AExpr guard, AQuestion q) {
 		case ifThenElse(AExpr innerGuard, AQuestion ifQuestion, AQuestion elseQuestion): {
 			list[AQuestion] qs = [];
 			qs += flattenBlock(and(guard, innerGuard), ifQuestion);
+			
+			// The guard of else equals not(ifGuard)
 			qs += flattenBlock(and(guard, not(innerGuard)), elseQuestion);
 			return qs;
 		}
@@ -53,6 +55,7 @@ list[AQuestion] flatten(AExpr guard, AQuestion q) {
 	}
 }
 
+// Calls flatten on all the questions in the block
 list[AQuestion] flattenBlock(AExpr guard, AQuestion block) {
 	list[AQuestion] flattenedQs = [];
 	switch (block) {

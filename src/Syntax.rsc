@@ -10,7 +10,6 @@ extend lang::std::Id;
 start syntax Form 
   = "form" Id "{" Question* "}"; 
 
-// TODO: question, computed question, block, if-then-else, if-then
 syntax Question
   = Str Id ":" Type
   | Str Id ":" Type "=" Expr
@@ -18,9 +17,6 @@ syntax Question
   | "if" "(" Expr ")" Question !>> "else" // !>>: can not be followed by "else"
   | "if" "(" Expr ")" Question "else" Question; 
 
-// TODO: +, -, *, /, &&, ||, !, >, <, <=, >=, ==, !=, literals (bool, int, str)
-// Think about disambiguation using priorities and associativity
-// and use C/Java style precedence rules (look it up on the internet)
 syntax Expr 
   = Id \ "true" \ "false" // true/false are reserved keywords.
   | Bool // 0

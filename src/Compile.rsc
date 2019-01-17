@@ -6,16 +6,8 @@ import IO;
 import lang::html5::DOM; // see standard library
 
 /*
- * Implement a compiler for QL to HTML and Javascript
+ * Compiler for QL to HTML and Javascript
  *
- * - assume the form is type- and name-correct
- * - separate the compiler in two parts form2html and form2js producing 2 files
- * - use string templates to generate Javascript
- * - use the HTML5Node type and the `str toString(HTML5Node x)` function to format to string
- * - use any client web framework (e.g. Vue, React, jQuery, whatever) you like for event handling
- * - map booleans to checkboxes, strings to textfields, ints to numeric text fields
- * - be sure to generate uneditable widgets for computed questions!
- * - if needed, use the name analysis to link uses to definitions
  */
 
 void compile(AForm f) {
@@ -212,8 +204,8 @@ str expr2js(AExpr e) {
 	    case lt(AExpr lhs, AExpr rhs): return "<expr2js(lhs)> \< <expr2js(rhs)>";
 	    case geq(AExpr lhs, AExpr rhs): return "<expr2js(lhs)> \>= <expr2js(rhs)>";
 	    case leq(AExpr lhs, AExpr rhs): return "<expr2js(lhs)> \<= <expr2js(rhs)>";
-	    case equal(AExpr lhs, AExpr rhs): return "<expr2js(lhs)> == <expr2js(rhs)>"; // Let rascal's == operator handle type checking
-	    case neq(AExpr lhs, AExpr rhs): return "<expr2js(lhs)> != <expr2js(rhs)>"; // Let rascal's == operator handle type checking
+	    case equal(AExpr lhs, AExpr rhs): return "<expr2js(lhs)> == <expr2js(rhs)>";
+	    case neq(AExpr lhs, AExpr rhs): return "<expr2js(lhs)> != <expr2js(rhs)>";
 	    case and(AExpr lhs, AExpr rhs): return "<expr2js(lhs)> && <expr2js(rhs)>";
 	    case or(AExpr lhs, AExpr rhs): return "<expr2js(lhs)> || <expr2js(rhs)>";
 	    default: throw "Unsupported expression <e>";
