@@ -28,7 +28,7 @@ TEnv collect(AForm f) {
 
 // Returns a set which is a union of errors end messages for questions and expressions respectivey 
 set[Message] check(AForm f, TEnv tenv, UseDef useDef) {
-	return union({check(q, tenv, useDef) | /AQuestion q := f.questions, q has id})
+  return union({check(q, tenv, useDef) | /AQuestion q := f.questions, q has id})
 			+ union({check(exp, tenv, useDef) | /AExpr exp := f}) ; 
 }
 

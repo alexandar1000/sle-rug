@@ -64,12 +64,12 @@ VEnv evalOnce(AForm f, Input inp, VEnv venv) {
 VEnv eval(AQuestion q, Input inp, VEnv venv) {
   // Evaluate conditions for branching,
   // Evaluate inp and computed questions to return updated VEnv
-    switch (q) {
-    // If it is an ordinary question, we should update the value of the question in the venv
-      case question(_, str identifier, _): 
-      	if (identifier == inp.question) {
-      		return (inp.question : inp.\value);
-      	}
+  switch (q) {
+  // If it is an ordinary question, we should update the value of the question in the venv
+    case question(_, str identifier, _): 
+      if (identifier == inp.question) {
+      	return (inp.question : inp.\value);
+      }
       
       // If it is computed, we need to evaluate what is computed and assign it to the venv
       case computed(_, str identifier, _, AExpr expr):
